@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="style.css">
+     <link
+  href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css"
+  rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        <div id="container">
+         <div id="header">
+             <i class="ri-sticky-note-add-fill"></i>
+            <h1> Task Manager  </h1>
+             </div>
+            <div class="organize">
+            <h5> Organize your tasks, stay productive! </h5>
+            <i class="ri-space-ship-2-fill"></i>
+             </div>
+             <div id="aiPlanner">
+                <h2>🤖 AI Smart Task Planner</h2>
+                <input
+                    type="text"
+                    id="goalInput"
+                    placeholder="Example: Learn JavaScript in 30 days">
+
+                <button id="generateBtn">
+                    ✨ Generate Tasks
+                </button>
+                <button id="clearBtn">
+                        🗑 Clear
+                    </button>
+                <div id="result">
+                    
+                </div>
+            </div>
+           
+             <div id="Addnewtask">
+                <div id="first">
+                <i class="ri-file-add-line"></i>
+                <h3> Add New Task</h3>
+                </div>
+                <div id="second">
+                    <input
+                        type="text"
+                        id="taskInput"
+                        placeholder="Enter your task here..."
+                        >   
+                <button id="addBtn">+ Add Task</button>
+                </div>
+                <div id="third">
+                <p>Press 
+                <span> Enter</span>
+                to add task </p>
+                </div>
+             </div>
+
+             <div id="taskaddSuccess">
+                <i class="ri-checkbox-circle-line"></i>
+                <p>Task added successfully!</p>
+             </div>
+             <div id="plz">
+               <i class="ri-error-warning-line"></i>
+                <p> Please enter a task. Task cannot be empty!</p>
+             </div>
+             <div id="yourtask">
+                <i class="ri-booklet-line"></i>
+                <p>Your Tasks</p>
+                <h5 id="taskCount">3</h5>
+               <select id="filter" class="alltask">
+                        <option value="all">All Tasks</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                  </div>
+       <div id="topic">
+                   <div class="number"><h4>#</h4></div>
+                        <div class="task"><p>Task</p></div>
+                        <div class="status"><h5>Status</h5></div>
+                        <div class="date"><p>Created At</p></div>
+                        <div class="actions-title"><h5>Actions</h5></div>
+                </div>
+                <div id="taskList">
+                <div class="subjects">
+                    <div class="number"> <h4>1</h4></div>
+                   <div class="tasks"><i class="ri-checkbox-circle-fill"></i> <p>Learn JavaScript Basics</p></div>
+                   <div class="status1"> <h5>Pending</h5></div>
+
+                   <div class="date">
+                    <i class="ri-calendar-2-line"></i> <p>25 May 2026, 10.00 AM  </p></div>
+                    <div class="actions">
+                    <div class="edit">
+                        <i class="ri-pencil-fill"></i>
+                        <p>Edit</p>
+                    </div>
+                    <div class="Delete">
+                        <i class="ri-delete-bin-5-line"></i>
+                        <p>Delete</p>
+                    </div>
+                    <div class="Done">
+                            <i class="ri-check-line"></i>
+                        <p>Done</p>
+                    </div>
+                    </div>
+                </div>
+                 <div class="subjects">
+                    <div class="number"> <h4>2</h4></div>
+                   <div class="tasks"><i class="ri-checkbox-circle-fill"></i> <p>Build a Task Manager App</p></div>
+                   <div class="status1"> <h5>Pending</h5></div>
+
+                   <div class="date">
+                    <i class="ri-calendar-2-line"></i> <p>25 May 2026, 10.00 AM  </p></div>
+                    <div class="actions">
+                    <div class="edit">
+                        <i class="ri-pencil-fill"></i>
+                        <p>Edit</p>
+                    </div>
+                    <div class="Delete">
+                        <i class="ri-delete-bin-5-line"></i>
+                        <p>Delete</p>
+                    </div>
+                    <div class="Done">
+                            <i class="ri-check-line"></i>
+                        <p>Done</p>
+                    </div>
+                    </div>
+                </div>
+                 <div class="subjects">
+                    <div class="number"> <h4>3</h4></div>
+                   <div class="tasks"><i class="ri-checkbox-circle-fill"></i> <p>Study node.js</p></div>
+                   <div class="status1"> <h5>Pending</h5></div>
+
+                   <div class="date">
+                    <i class="ri-calendar-2-line"></i> <p>25 May 2026, 10.00 AM  </p></div>
+                    <div class="actions">
+                    <div class="edit">
+                        <i class="ri-pencil-fill"></i>
+                        <p>Edit</p>
+                    </div>
+                    <div class="Delete">
+                        <i class="ri-delete-bin-5-line"></i>
+                        <p>Delete</p>
+                    </div>
+                    <div class="Done">
+                            <i class="ri-check-line"></i>
+                        <p>Done</p>
+                    </div>
+                    </div>
+                </div>
+                 
+                </div>
+                <div class="bottom">
+                    <div class="totalt">
+                        <i class="ri-list-unordered"></i>
+                        <div class="boox1">
+                              <p id="totalTasks">3</p>
+                            <h5> Total Tasks</h5>
+                        </div>
+                    </div>
+                    <div class="completedbox">
+                        <i class="ri-checkbox-circle-fill"></i>
+                        <div class="boox2">
+                            <p id="completedTasks" >0</p>
+                            <h5>Completed</h5>
+                        </div>
+                    </div>
+                    <div class="pending">
+                       <i class="ri-time-line"></i>
+                        <div class="boox3">
+                            <p>3</p>
+                            <h5>Pending</h5>
+                        </div>
+                    </div>
+                    <div class="deleted">
+                        <i class="ri-delete-bin-5-line"></i>
+                        <div class="boox4">
+                            <p>0</p>
+                            <h5>Deleted</h5>
+                        </div>
+                    </div>
+                </div>
+       </div>
+    </div>
+    <script src="script.js"></script>
+    
+</body>
+</html>
