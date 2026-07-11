@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Transaction — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+ 
+<header class="topbar">
+    <div class="brand"><span class="mark">₹</span> Ledger</div>
+    <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    <nav class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-transaction.html">Add Transaction</a>
+        <a href="history.html">History</a>
+        <a href="reports.html">Reports</a>
+        <a href="assistant.html">AI Assistant</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+ 
+<main>
+    <span class="eyebrow">New Entry</span>
+    <h1 class="page-title">Add Transaction</h1>
+    <p class="page-sub">Log a new line in your ledger — income or expense.</p>
+ 
+    <div class="ledger" style="max-width:520px;">
+        <form id="txForm">
+            <div class="type-toggle">
+                <label class="income-opt">
+                    <input type="radio" name="type" value="income" checked>
+                    <span>↑ Income</span>
+                </label>
+                <label class="expense-opt">
+                    <input type="radio" name="type" value="expense">
+                    <span>↓ Expense</span>
+                </label>
+            </div>
+ 
+            <div class="field">
+                <label for="description">Description</label>
+                <input type="text" id="description" placeholder="e.g. Freelance payment, Lunch, Rent" required>
+            </div>
+ 
+            <div class="field">
+                <label for="amount">Amount (₹)</label>
+                <input type="number" id="amount" min="0.01" step="0.01" placeholder="0.00" required>
+            </div>
+ 
+            <div class="field">
+                <label for="category">Category</label>
+                <select id="category" required>
+                    <option value="">Select category</option>
+                    <option>Food</option>
+                    <option>Rent</option>
+                    <option>Travel</option>
+                    <option>Shopping</option>
+                    <option>Bills</option>
+                    <option>Salary</option>
+                    <option>Freelance</option>
+                    <option>Entertainment</option>
+                    <option>Health</option>
+                    <option>Other</option>
+                </select>
+            </div>
+ 
+            <div class="field">
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
+            </div>
+ 
+            <button type="submit" class="btn btn-primary btn-block">+ Add to Ledger</button>
+        </form>
+    </div>
+</main>
+ 
+<footer>Ledger · Finance Tracker</footer>
+ 
+<script src="js/storage.js"></script>
+<script src="js/nav.js"></script>
+<script>
+    document.getElementById("date").valueAsDate = new Date();
+
+    document.querySelectorAll('.type-toggle label').forEach(function (label) {
+    label.addEventListener('click', function () {
+        document.querySelectorAll('.type-toggle label').forEach(l => l.classList.remove('selected'));
+        this.classList.add('selected');
+    });
+});
+document.querySelector('.income-opt').classList.add('selected'); // default selected
+ 
+    document.getElementById("txForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+ 
+        const type = document.querySelector('input[name="type"]:checked').value;
+        const description = document.getElementById("description").value.trim();
+        const amount = parseFloat(document.getElementById("amount").value);
+        const category = document.getElementById("category").value;
+        const date = document.getElementById("date").value;
+ 
+        if (!description || !amount || amount <= 0 || !category || !date) {
+            showToast("Please fill in every field correctly.");
+            return;
+        }
+ 
+        addTransaction({ description, amount, type, category, date });
+ 
+        showToast("Transaction added ✓");
+        this.reset();
+        document.getElementById("date").valueAsDate = new Date();
+    });
+</script>
+</body>
+</html>

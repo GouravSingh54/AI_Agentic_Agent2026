@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+ 
+<header class="topbar">
+    <div class="brand"><span class="mark">₹</span> Ledger</div>
+    <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    <nav class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-transaction.html">Add Transaction</a>
+        <a href="history.html">History</a>
+        <a href="reports.html">Reports</a>
+        <a href="assistant.html">AI Assistant</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+ 
+<main>
+    <span class="eyebrow">Analysis</span>
+    <h1 class="page-title">Reports</h1>
+    <p class="page-sub">Where your money is going, by category — and what Gemini thinks about it.</p>
+ 
+    <div class="ledger">
+        <div class="ledger-header">
+            <h2>Spending by Category</h2>
+        </div>
+        <div id="chartWrap" style="max-width:420px;margin:0 auto;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <p id="noData" style="text-align:center;color:var(--ink-soft);display:none;padding:30px 0;">No expenses logged yet — add some transactions to see your chart.</p>
+    </div>
+ 
+    <div class="ai-panel">
+        <h3>🤖 AI Spending Insights</h3>
+        <p id="insightsText" style="color:rgba(243,237,225,0.5);">Click the button below to get a short, personalized read on your spending from Gemini.</p>
+        <button id="insightsBtn" class="btn btn-primary" style="margin-top:14px;">Get AI Insights</button>
+    </div>
+</main>
+ 
+<footer>Ledger · Finance Tracker</footer>
+ 
+<script src="js/storage.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/nav.js"></script>
+<script>
+    const totals = getCategoryTotals();
+    const labels = Object.keys(totals);
+    const values = Object.values(totals);
+ 
+    if (labels.length === 0) {
+        document.getElementById("chartWrap").style.display = "none";
+        document.getElementById("noData").style.display = "block";
+    } else {
+        new Chart(document.getElementById("categoryChart"), {
+            type: "doughnut",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: ["#B08D3E", "#2F6844", "#A63D2F", "#4A6FA5", "#8A6C28", "#6B4C6B", "#3E7C8C", "#7A5C3E", "#5C7A4C", "#A34C6B"],
+                    borderColor: "#F3EDE1",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: "bottom", labels: { color: "#12181B", font: { family: "Inter" } } }
+                }
+            }
+        });
+    }
+ 
+    document.getElementById("insightsBtn").addEventListener("click", async function () {
+        const btn = this;
+        const textEl = document.getElementById("insightsText");
+        const balance = getBalance();
+        const income = getTotalIncome();
+        const expense = getTotalExpenses();
+        const catTotals = getCategoryTotals();
+ 
+        if (income === 0 && expense === 0) {
+            textEl.textContent = "Add a few transactions first so there's something to analyze.";
+            return;
+        }
+ 
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Thinking...';
+        textEl.textContent = "";
+ 
+        const prompt = `I track my personal finances. My total income is ₹${income}, total expenses are ₹${expense}, and my current balance is ₹${balance}. My spending by category is: ${JSON.stringify(catTotals)}. In 3-4 short sentences, give me a friendly, specific insight about my spending pattern and one practical tip to improve it. Keep it concise, no markdown formatting.`;
+ 
+        try {
+            const reply = await askAI(prompt);
+            textEl.textContent = reply;
+        } catch (err) {
+            textEl.textContent = "Couldn't fetch insights right now. Please try again.";
+        }
+ 
+        btn.disabled = false;
+        btn.textContent = "Get AI Insights";
+    });
+</script>
+</body>
+</html>

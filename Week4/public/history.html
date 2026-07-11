@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>History — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+ 
+<header class="topbar">
+    <div class="brand"><span class="mark">₹</span> Ledger</div>
+    <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    <nav class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-transaction.html">Add Transaction</a>
+        <a href="history.html">History</a>
+        <a href="reports.html">Reports</a>
+        <a href="assistant.html">AI Assistant</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+ 
+<main>
+    <span class="eyebrow">Full Record</span>
+    <h1 class="page-title">Transaction History</h1>
+    <p class="page-sub">Every entry in your ledger, most recent first.</p>
+ 
+    <div class="field" style="max-width:260px;">
+        <label for="filterType">Filter</label>
+        <select id="filterType">
+            <option value="all">All Transactions</option>
+            <option value="income">Income Only</option>
+            <option value="expense">Expenses Only</option>
+        </select>
+    </div>
+ 
+    <div class="ledger">
+        <div class="ledger-header">
+            <h2>Ledger Entries</h2>
+            <span class="mono" style="font-size:0.8rem;color:var(--ink-soft);" id="countLabel">0 entries</span>
+        </div>
+        <div id="fullList"></div>
+    </div>
+</main>
+ 
+<footer>Ledger · Finance Tracker</footer>
+ 
+<script src="js/storage.js"></script>
+<script src="js/nav.js"></script>
+<script>
+    function formatDate(dateStr) {
+        const d = new Date(dateStr);
+        if (isNaN(d)) return dateStr;
+        return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    }
+ 
+    function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+    }
+ 
+    function renderHistory() {
+        const filter = document.getElementById("filterType").value;
+        let list = getTransactions().sort((a, b) => new Date(b.date) - new Date(a.date));
+ 
+        if (filter !== "all") {
+            list = list.filter(t => t.type === filter);
+        }
+ 
+        document.getElementById("countLabel").textContent = list.length + (list.length === 1 ? " entry" : " entries");
+ 
+        const container = document.getElementById("fullList");
+ 
+        if (list.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <span class="glyph">📖</span>
+                    <p>Nothing here yet.</p>
+                </div>`;
+            return;
+        }
+ 
+        container.innerHTML = list.map(function (t) {
+            const isIncome = t.type === "income";
+            return `
+                <div class="entry">
+                    <span class="date">${formatDate(t.date)}</span>
+                    <span>
+                        <span class="desc">${escapeHtml(t.description)}</span>
+                        <span class="cat">${escapeHtml(t.category)}</span>
+                    </span>
+                    <span class="stamp ${isIncome ? "cr" : "dr"}">${isIncome ? "CR" : "DR"}</span>
+                    <span class="amount ${isIncome ? "income" : "expense"} mono">${isIncome ? "+" : "−"}${formatMoney(t.amount)}</span>
+                    <button class="delete-btn" data-id="${t.id}">Delete</button>
+                </div>`;
+        }).join("");
+ 
+        container.querySelectorAll(".delete-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                if (confirm("Delete this transaction?")) {
+                    deleteTransaction(Number(this.dataset.id));
+                    renderHistory();
+                    showToast("Transaction deleted");
+                }
+            });
+        });
+    }
+ 
+    document.getElementById("filterType").addEventListener("change", renderHistory);
+    renderHistory();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Ledger</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+ 
+<header class="topbar">
+    <div class="brand"><span class="mark">₹</span> Ledger</div>
+    <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+    <nav class="navlinks">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-transaction.html">Add Transaction</a>
+        <a href="history.html">History</a>
+        <a href="reports.html">Reports</a>
+        <a href="assistant.html">AI Assistant</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+ 
+<main>
+    <span class="eyebrow">Preferences</span>
+    <h1 class="page-title">Settings</h1>
+    <p class="page-sub">Set your monthly budget goal and manage app preferences.</p>
+ 
+    <div class="ledger" style="max-width:520px;">
+        <div class="field">
+            <label for="budgetInput">Monthly Budget Goal (₹)</label>
+            <input type="number" id="budgetInput" min="0" placeholder="e.g. 15000">
+        </div>
+        <button id="saveBudgetBtn" class="btn btn-primary btn-block" style="margin-bottom:8px;">Save Budget</button>
+    </div>
+ 
+    <div class="ledger" style="max-width:520px;margin-top:20px;padding-top:6px;padding-bottom:6px;">
+        <div class="setting-row">
+            <div>
+                <div class="label">Dark Mode</div>
+                <div class="hint">Switch the ledger to a darker passbook tone.</div>
+            </div>
+            <button id="darkToggle" class="switch"></button>
+        </div>
+    </div>
+ 
+    <div class="ledger" style="max-width:520px;margin-top:20px;border:1.5px solid var(--rupee-red);">
+        <div class="setting-row" style="border:none;padding-top:2px;">
+            <div>
+                <div class="label" style="color:var(--rupee-red);">Reset All Data</div>
+                <div class="hint">Permanently deletes every transaction. This cannot be undone.</div>
+            </div>
+            <button id="resetBtn" class="btn btn-danger">Reset</button>
+        </div>
+    </div>
+</main>
+ 
+<footer>Ledger · Finance Tracker</footer>
+ 
+<script src="js/storage.js"></script>
+<script src="js/nav.js"></script>
+<script>
+    const settings = getSettings();
+    document.getElementById("budgetInput").value = settings.budget || "";
+ 
+    const darkToggle = document.getElementById("darkToggle");
+    if (settings.darkMode) darkToggle.classList.add("on");
+ 
+    document.getElementById("saveBudgetBtn").addEventListener("click", function () {
+        const budget = parseFloat(document.getElementById("budgetInput").value) || 0;
+        const current = getSettings();
+        saveSettings({ ...current, budget });
+        showToast("Budget goal saved ✓");
+    });
+ 
+    darkToggle.addEventListener("click", function () {
+        const current = getSettings();
+        const newDark = !current.darkMode;
+        saveSettings({ ...current, darkMode: newDark });
+        this.classList.toggle("on", newDark);
+        document.documentElement.setAttribute("data-theme", newDark ? "dark" : "light");
+    });
+ 
+    document.getElementById("resetBtn").addEventListener("click", function () {
+        if (confirm("This will permanently delete all your transactions. Are you sure?")) {
+            clearTransactions();
+            showToast("All data has been reset");
+        }
+    });
+</script>
+</body>
+</html>
+ 
